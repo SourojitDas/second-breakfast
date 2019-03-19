@@ -1,2 +1,2 @@
 # second-breakfast
-Repository for Team Sophie - Adaptive Analytics project
+Repository for Team Sophie - Adaptive Applications project
