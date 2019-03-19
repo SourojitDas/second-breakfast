@@ -1,0 +1,23 @@
+{
+  "user_name": "User 1",
+  "user_id": "uid01",
+  "favourite_cuisine" : {
+    "Chinese": 37,
+    "Indian": 43,
+    "Continental": 20
+  },
+  "is_vegan": "False",
+  "like_spicy": "True",
+  "allergen": ["Tree nut", "Soy"],
+  "favourite_restaurant": {
+    "restaurant 1": 26,
+    "restaurant 2": 34,
+    "restaurant 3": 40
+  },
+  "home_location": "Dublin",
+  "current_location": "Dublin",
+  "budget": {
+    "weekdays": 15,
+    "weekends": 30
+  }
+}
