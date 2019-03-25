@@ -7,6 +7,20 @@
     "Continental": 20
   },
   "is_vegan": "False",
+  "favourite_dish":{
+	"Sage Egg-White Frittata",
+	"Kalua Pork Nachos",
+	"Mushroom Risotto",
+	"Soy-Marinated Flank Steak"
+  },
+  "favourite_flavour": {
+	 "Sweet":0.5,
+      "Sour":1.0,
+      "Salty":0.3,
+      "Piquant":0.5,
+      "Bitter":0.3,
+      "Meaty":0.2
+  },
   "like_spicy": "True",
   "allergen": ["Tree nut", "Soy"],
   "favourite_restaurant": {
