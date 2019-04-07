@@ -13,6 +13,9 @@ def save_user_details(user, user_model):
     user_collection.insert(user)
     user_models_collection.insert(user_model)
 
+def save_user_model(model):
+    user_models_collection.insert(model)
+    return "Saved"
 
 # def save_business_data():
 #     with open('Business.json') as business_json:
