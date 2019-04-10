@@ -1,6 +1,7 @@
 import json
 from bson import json_util
 import pymongo
+import re
 import adaption
 
 import os
@@ -73,18 +74,31 @@ def get_user_model(userid):
 
 def get_recommendation(user_id):
     user_model = get_user_model(user_id)
-    user_fav_cuisine = user_model["favourite_cuisine"]
+    print(user_model)
+    user_fav_cuisine = user_model['favourite_cuisine']
     recommendations = []
-    allergen_info = [al.lower() for al in user_model["allergen"]]
+    allergens = ["Soy", "Butter", "Cheese"]
+    regexes = []
+    for item in allergens:
+        regexes.append(re.compile(".*" + item + ".*", re.IGNORECASE))
     for cuisine, value in user_fav_cuisine.items():
-        recommendations.append(recipe_collection.aggregate({"attributes.cuisine":cuisine},
-                                                           {"$sample":{"size": value}}))
-    final_recommendation = []
-    for reco in recommendations:
-        for al in allergen_info:
-            if al not in reco["ingredientLines"]:
-                final_recommendation.append(reco)
-    return final_recommendation
+        recommendations.extend(list(recipe_collection.aggregate([{"$match":{"attributes.cuisine":cuisine,"ingredientLines": { "$nin": regexes }}},
+                    {"$sample":{"size": value}},
+                    { "$project" : { "_id" : 1 , "ingredientLines" : 1, "images":1, "attributes": 1, "name": 1 }}])))
+
+    res = []
+    for elem in recommendations:
+        temp = {}
+        temp["cuisine"] = elem["attributes"]["cuisine"][0]
+        temp["_id"] = str(elem["_id"])
+        temp["img"] = elem["images"][0]["hostedLargeUrl"]
+        temp["name"] = elem["name"]
+        res.append(temp)
+
+    result =json.dumps(res)
+
+
+    return result
 
 
 def track_activity(req_data):
@@ -125,7 +139,7 @@ def track_activity(req_data):
 # def process_feedback(action):
 
 
-
+# get_recommendation("uid01")
 
 
 

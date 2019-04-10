@@ -24,6 +24,10 @@ def recommend():
     req_data = request.get_json()
     return mongo_db_client.get_recommendation(req_data["user_id"])
 
+@app.route("/second-breakfast/test/")
+def test():
+    return mongo_db_client.get_recommendation("uid01")
+
 if __name__ == '__main__':
     app.run(debug=True)
 
