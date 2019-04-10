@@ -17,8 +17,10 @@ def submit_activity():
     req_data = request.get_json()
     return mongo_db_client.track_activity(req_data)
 
-
-
+@app.route("/second-breakfast/recommendation", methods=['POST'])
+def recommend():
+    req_data = request.get_json()
+    return mongo_db_client.get_recommendation(req_data["user_id"])
 
 if __name__ == '__main__':
     app.run(debug=True)
