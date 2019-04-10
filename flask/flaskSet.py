@@ -1,7 +1,9 @@
 from flask import Flask, request
+from flask_cors import CORS
 import mongo_db_client
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/second-breakfast/show-recipe/")
 def show_recipe():
