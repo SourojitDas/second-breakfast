@@ -12,12 +12,15 @@ connection = pymongo.MongoClient("vm-18-202-35-71.rosettavm.com:27017",
 
 db = connection["sophie_dev_1"]
 recipe_collection = db['recipes']
+user_collection = db['users']
 
+print(db.getCollectionNames())
 def get_recommendation():
     recommendations = []
     data = list(recipe_collection.aggregate([{"$match": {"attributes.cuisine": "Barbecue"}},
                                                          {"$sample": {"size": 10}}]))
     for elem in data:
+        print(elem)
         recommendations.append(elem)
     print(len(recommendations))
 

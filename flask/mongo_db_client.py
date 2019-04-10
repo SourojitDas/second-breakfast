@@ -27,6 +27,7 @@ def save_user_details(user, user_model):
 def save_user_model(model):
     user_models_collection.insert(model)
     return "Saved"
+
 def update_user_model(user_id, long_model, short_model):
     user_models_collection.findOneAndUpdate({"user_id": id}, {"$set":{"favorite_cuisine": long_model,
                                                                       "shortterm_favourite_cuisine": short_model}})
@@ -74,8 +75,17 @@ def get_recommendation(user_id):
     user_model = get_user_model(user_id)
     user_fav_cuisine = user_model["favourite_cuisine"]
     recommendations = []
+    allergen_info = [al.lower() for al in user_model["allergen"]]
     for cuisine, value in user_fav_cuisine.items():
-        recommendations.append(recipe_collection.aggregate({"attributes.cuisine":cuisine}, {"$sample":{"size": value}}))
+        recommendations.append(recipe_collection.aggregate({"attributes.cuisine":cuisine},
+                                                           {"$sample":{"size": value}}))
+    final_recommendation = []
+    for reco in recommendations:
+        for al in allergen_info:
+            if al not in reco["ingredientLines"]:
+                final_recommendation.append(reco)
+    return final_recommendation
+
 
 def track_activity(req_data):
     user_id = req_data["user_id"]

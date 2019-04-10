@@ -13,7 +13,7 @@
   },
   "is_vegan": "False",
   "like_spicy": "True",
-  "allergen": ["Tree nut", "Soy"],
+    "allergen": ["Tree nut", "Soy"],
   "favourite_restaurant": {
     "restaurant 1": 26,
     "restaurant 2": 34,
