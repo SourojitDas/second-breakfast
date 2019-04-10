@@ -6,6 +6,11 @@
     "Indian": 43,
     "Continental": 20
   },
+  "shortterm_favourite_cuisine" : {
+    "Chinese": 37,
+    "Indian": 43,
+    "Continental": 20
+  },
   "is_vegan": "False",
   "like_spicy": "True",
   "allergen": ["Tree nut", "Soy"],

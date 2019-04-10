@@ -1,10 +1,12 @@
 import json
 from bson import json_util
 import pymongo
+import adaption
+
 import os
 username = "AA"
 password = "hayabusa"
-connection = pymongo.MongoClient("vm-18-203-247-130.rosettavm.com:27017",
+connection = pymongo.MongoClient("vm-18-202-35-71.rosettavm.com:27017",
                      username='AA',
                      password='hayabusa',
                      authSource='admin',
@@ -25,7 +27,9 @@ def save_user_details(user, user_model):
 def save_user_model(model):
     user_models_collection.insert(model)
     return "Saved"
-
+def update_user_model(user_id, long_model, short_model):
+    user_models_collection.findOneAndUpdate({"user_id": id}, {"$set":{"favorite_cuisine": long_model,
+                                                                      "shortterm_favourite_cuisine": short_model}})
 # def save_business_data():
 #     with open('Business.json') as business_json:
 #         business_data = json.load(business_json)
@@ -73,7 +77,37 @@ def get_recommendation(user_id):
     for cuisine, value in user_fav_cuisine.items():
         recommendations.append(recipe_collection.aggregate({"attributes.cuisine":cuisine}, {"$sample":{"size": value}}))
 
-def track_activity():
+def track_activity(req_data):
+    user_id = req_data["user_id"]
+    action_cusine = req_data["cuisine"]
+    action = req_data["action"]
+    user_model = get_user_model(user_id)
+    short_term_fav_cuisine = user_model["shortterm_favourite_cuisine"]
+    fav_cuisine = user_model["favourite_cuisine"]
+
+    new_short_term_value = 0
+    new_long_term_value = 0
+
+    if action_cusine in fav_cuisine.keys():
+        if action == 'like':
+            new_short_term_value = adaption.get_new_value_for_short_term_attribute('like', fav_cuisine[action_cusine])
+            new_long_term_value = adaption.get_new_value_for_long_term_attribute('like', fav_cuisine[action_cusine])
+        if action == 'dislike':
+            new_short_term_value = adaption.get_new_value_for_short_term_attribute('dislike', fav_cuisine[action_cusine])
+            new_long_term_value = adaption.get_new_value_for_long_term_attribute('dislike', fav_cuisine[action_cusine])
+        short_term_fav_cuisine[action_cusine] = new_short_term_value
+        fav_cuisine[action_cusine] = new_long_term_value
+    else:
+        if action == 'like':
+            new_short_term_value = adaption.get_new_value_for_short_term_attribute('like', 0)
+            new_long_term_value = adaption.get_new_value_for_long_term_attribute('like', 0)
+        if action == 'dislike':
+            new_short_term_value = adaption.get_new_value_for_short_term_attribute('dislike', 0)
+            new_long_term_value = adaption.get_new_value_for_long_term_attribute('dislike', 0)
+            fav_cuisine[action_cusine] = new_short_term_value
+        short_term_fav_cuisine[action_cusine] = new_short_term_value
+        fav_cuisine[action_cusine] = new_long_term_value
+    update_user_model(user_id, fav_cuisine, short_term_fav_cuisine)
     return "ok"
 # action = {
 #     image data

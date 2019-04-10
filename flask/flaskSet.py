@@ -12,10 +12,12 @@ def save_new_user_model():
     req_data = request.get_json()
     return mongo_db_client.save_user_model(req_data)
 
-@app.route("/second-breakfast/activity", methods['POST'])
+@app.route("/second-breakfast/activity", methods=['POST'])
 def submit_activity():
     req_data = request.get_json()
     return mongo_db_client.track_activity(req_data)
+
+
 
 
 if __name__ == '__main__':
