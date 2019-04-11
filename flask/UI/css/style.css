@@ -783,7 +783,7 @@ body {
 
     .progress-bar {
       height: 8px;
-      background: #4caf50;
+      background: rgb(231, 114, 5);
       width: 0%;
     }
 

@@ -71,12 +71,20 @@
             opacity: 1;
             transition-delay: 0s;
         }
+         .header1 {
+      position: fixed;
+      top: 0;
+      z-index: 1;
+      width: 100%;
+      background-color: #f1f1f1;
+    }
     </style>
 </head>
 
 <body>
+    <div class="header">
     <div class="box">
-        <h3 style="text-align: center; font-weight: bold; color:black;">Second Breakast</h3>
+        <p style="font-size: 28px; text-align: center; font-weight: bold; color:black;">Second Breakast</p>
     </div>
     <div class="progress-container">
         <div class="progress-bar" id="myBar"></div>
@@ -87,8 +95,9 @@
         <li><a href="#contact">Dashboard</a></li>
         <li><a href="preferences.html">Preferences</a></li>
     </ul>
+    </div>
 <!-- <button class="button1" onclick="submit()">Submit</button> -->
-    <h1>Recommendations</h1>
+    <h1 style="padding-top: 125px">Recommendations</h1>
     <div class="row">
         <div class="column">
             <div class="img-wrap">
@@ -151,7 +160,7 @@
                 for (let j = 0; j < rows; j++) {
                     console.log("in inner")
                     d = data[(i * columns) + j]
-                    var sp = ("<image class=" + "img" + " src=" + d.img + " alt=" + d.reasoning + ">"
+                    var sp = ("<image class=" + "img" + " src=" + d.img + " alt=\'"+ d.reasoning + "'\>"
                         + "<br>" 
                         + "<span> " + d.name + " </span>"
                         + "<br>" + "<br>"
@@ -247,7 +256,14 @@
 
 // CSS shows/hides the alt text on hover
 
+    window.onscroll = function () { myFunction() };
 
+    function myFunction() {
+        var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        var scrolled = (winScroll / height) * 100;
+        document.getElementById("myBar").style.width = scrolled + "%";
+    }
 
 
     </script>
