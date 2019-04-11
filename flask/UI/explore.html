@@ -81,9 +81,9 @@
     <div class="progress-container">
         <div class="progress-bar" id="myBar"></div>
     </div>
-<!-- <button class="button1" onclick="submit()">Submit</button> -->
-<button class="button1"><a href="explore.html">Explore</a></button>
-    <h1>Recommendation System</h1>
+    <!--     <button class="button1" onclick="submit()">Submit</button>
+ -->
+    <h1>Explore</h1>
     <div class="row">
         <div class="column">
             <div class="img-wrap">
@@ -111,78 +111,77 @@
 
     <script>
         var selectedMap = new Map()
-        var uId = localStorage.getItem('username')
         window.onload = function () {
             var data = ""
-            
-            fetch('http://127.0.0.1:5000/second-breakfast/recommendation/'+uId)
+            var uId = localStorage.getItem('username')
+            fetch('http://127.0.0.1:5000/second-breakfast/explore/' + uId)
                 .then(function (response) {
                     return response.json();
                 })
                 .then(function (myJson) {
                     data = myJson
                     //localStorage.setItem('reccomData', JSON.stringify(myJson));
-                
-            //var data = jQuery.parseJSON(localStorage.getItem('reccomData'));
-            console.log("in html", data)
-            const columns = 4
-            const rows = Math.round(data.length / columns)
-            console.log(rows, columns)
-            var finalContent = "";
 
-            /*  data.forEach(function (d) {
-                 var sp = ("<image class=" + "img" + " src=" + d.img + " alt=" + d.reasoning + ">"
-                     + "<br>" + "<br>"
-                     + "<span> " + d.name + " </span>"
-                     + "<br>" + "<br>"
-                     + "<button id=" + "like_" + d._id + "  class=" + "button3" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,1)\">Like</button>"
-                     + "<button id=" + "dislike_" + d._id + " class=" + "button2" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,0)\">Dislike</button>"
-                 );
-                 finalContent = finalContent + sp
-             }) */
-            for (let i = 0; i < columns; i++) {
-                console.log("in outer")
-                let finalContent = ""
-                for (let j = 0; j < rows; j++) {
-                    console.log("in inner")
-                    d = data[(i * columns) + j]
-                    var sp = ("<image class=" + "img" + " src=" + d.img + " alt=" + d.reasoning + ">"
-                        + "<br>" 
-                        + "<span> " + d.name + " </span>"
-                        + "<br>" + "<br>"
-                        + "<button id=" + "like_" + d._id + "  class=" + "button3" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,1)\">Like</button>"
-                        + "<button id=" + "dislike_" + d._id + " class=" + "button2" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,0)\">Dislike</button>"
-                        + "<button id=" + "notInterested_" + d._id + " class=" + "button4" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,2)\">Not Interested</button>"
-                    );
-                    finalContent = finalContent + sp
-                }
-                document.getElementById("imge" + i).innerHTML = finalContent;
-            }
+                    //var data = jQuery.parseJSON(localStorage.getItem('reccomData'));
+                    console.log("in html", data)
+                    const columns = 4
+                    const rows = Math.round(data.length / columns)
+                    console.log(rows, columns)
+                    var finalContent = "";
+
+                    /*  data.forEach(function (d) {
+                         var sp = ("<image class=" + "img" + " src=" + d.img + " alt=" + d.reasoning + ">"
+                             + "<br>" + "<br>"
+                             + "<span> " + d.name + " </span>"
+                             + "<br>" + "<br>"
+                             + "<button id=" + "like_" + d._id + "  class=" + "button3" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,1)\">Like</button>"
+                             + "<button id=" + "dislike_" + d._id + " class=" + "button2" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,0)\">Dislike</button>"
+                         );
+                         finalContent = finalContent + sp
+                     }) */
+                    for (let i = 0; i < columns; i++) {
+                        console.log("in outer")
+                        let finalContent = ""
+                        for (let j = 0; j < rows; j++) {
+                            console.log("in inner")
+                            d = data[(i * columns) + j]
+                            var sp = ("<image class=" + "img" + " src=" + d.img + " alt=" + d.reasoning + ">"
+                                + "<br>" + "<br>"
+                                + "<span> " + d.name + " </span>"
+                                + "<br>" + "<br>"
+                                + "<button id=" + "like_" + d._id + "  class=" + "button3" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,1)\">Like</button>"
+                                + "<button id=" + "dislike_" + d._id + " class=" + "button2" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,0)\">Dislike</button>"
+                                + "<button id=" + "notInterested_" + d._id + " class=" + "button4" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,2)\">Not Interested</button>"
+                            );
+                            finalContent = finalContent + sp
+                        }
+                        document.getElementById("imge" + i).innerHTML = finalContent;
+                    }
                     console.log("after")
-            $(".img").wrap('<div class="alt-wrap"/>');
+                    $(".img").wrap('<div class="alt-wrap"/>');
 
-            // Add alt text after each .img
-            // 1. For all items with class .img...
-            // 2. Run a function for each of them...
-            // 3. To add a p element after it
-            // 5. Containing that element's alt text
-            $(".img").each(function () {
-                $(this).after('<p class="alt">' + $(this).attr('alt') + '</p>');
-            })
-            /* document.getElementById("imgGrid1").innerHTML = finalContent;
-            document.getElementById("imgGrid2").innerHTML = finalContent; */
+                    // Add alt text after each .img
+                    // 1. For all items with class .img...
+                    // 2. Run a function for each of them...
+                    // 3. To add a p element after it
+                    // 5. Containing that element's alt text
+                    $(".img").each(function () {
+                        $(this).after('<p class="alt">' + $(this).attr('alt') + '</p>');
+                    })
+                    /* document.getElementById("imgGrid1").innerHTML = finalContent;
+                    document.getElementById("imgGrid2").innerHTML = finalContent; */
                 });
         }
         function addValue(id, cuisine, imgURL, action) {
             var color
             var value
             if (action == 1) {
-                value="like"
+                value = "like"
                 color = document.getElementById("like_" + id);
                 color.className = 'button1'
                 color = document.getElementById("dislike_" + id);
                 color.className = 'button2'
-            } else if(action==0){
+            } else if (action == 0) {
                 value = "dislike"
                 color = document.getElementById("dislike_" + id);
                 color.className = 'button1'
@@ -196,7 +195,7 @@
             }
             var updateData = {
 
-                "user_id": uId,
+                "user_id": "uid01",
 
                 "timestamp": Date.now,
 
@@ -204,7 +203,7 @@
 
                 "action": value,
 
-                "imgURL":imgURL
+                "imgURL": imgURL
 
             }
             var url = 'http://127.0.0.1:5000/second-breakfast/activity/';
@@ -232,18 +231,9 @@
             }
             console.log(filteredList)
             var userName = localStorage.getItem('username')
-            
-            
+
+
         }
-    // Wrap every .img in a div
-    // 1. For all items with class .img...
-    // 2. Wrap them in a div
-
-
-// CSS shows/hides the alt text on hover
-
-
-
 
     </script>
 </body>

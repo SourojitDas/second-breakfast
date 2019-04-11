@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <title></title>
     <meta charset="UTF-8">
@@ -6,32 +7,36 @@
         * {
             box-sizing: border-box;
         }
-        .progress-container {
-      width: 100%;
-      height: 8px;
-      background: #ccc;
-    }
-.box {
-   display: block;
-   align-items:center;
-}
-    .progress-bar {
-      height: 8px;
-      background: #4caf50;
-      width: 0%;
-    }
 
-    .button1 {
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: #ccc;
+        }
+
+        .box {
+            display: block;
+            align-items: center;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #4caf50;
+            width: 0%;
+        }
+
+        .button1 {
             background-color: #4CAF50;
             /* Green */
             border: none;
             color: white;
             text-align: center;
             text-decoration: none;
-             border: 2px solid yellow;
+            border: 2px solid yellow;
             display: inline-block;
             font-size: 16px;
         }
+
         /* Create two equal columns that floats next to each other */
         .column {
             float: left;
@@ -40,7 +45,7 @@
             height: 700px;
             /* Should be removed. Only for demonstration */
         }
-    
+
         /* Clear floats after the columns */
         .row:after {
             content: "";
@@ -49,7 +54,7 @@
         }
     </style>
     <script language="javascript">
-        var userName= localStorage.getItem('username');
+        var userName = localStorage.getItem('username');
         window.onload = function createchkboxes() {
             var cuisineData = ["American", "Asian", "Barbecue", "Cajun & Creole", "Chinese", "Cuban", "English", "French",
                 "German", "Greek", "Hawaiian", "Hungarian", "Indian", "Irish", "Italian", "Japanese", "Kid-Friendly",
@@ -61,10 +66,10 @@
                 if (j == 1) {
                     createDynamicCheckBox(cuisineData, 'cuisineDiv');
                 } else {
-                    createDynamicCheckBox(allergiesData,'allergiesDiv');
+                    createDynamicCheckBox(allergiesData, 'allergiesDiv');
                 }
             }
-            function createDynamicCheckBox(data,divId) {
+            function createDynamicCheckBox(data, divId) {
                 for (var i = 0; i < data.length; i++) {
                     var label = document.createElement('label');
                     var br = document.createElement('br');
@@ -86,17 +91,54 @@
             return checkbox;
         }
         function getValues(cuisineDiv, allergiesDiv) {
-            var selectedCuisines=[]
-            var selectedAllergians=[]
+            var selectedCuisines = []
+            var selectedAllergians = []
             for (var j = 0; j < 2; j++) {
                 if (j == 1) {
-                    getSelectedData(cuisineDiv,selectedCuisines)
-                }else{
-                    getSelectedData(allergiesDiv,selectedAllergians)
+                    getSelectedData(cuisineDiv, selectedCuisines)
+                } else {
+                    getSelectedData(allergiesDiv, selectedAllergians)
                 }
             }
-            /* var userData={"preferedCuisines": selectedCuisines, "allergians": selectedAllergians}
-            var url = 'http://127.0.0.1:5000/second-breakfast/save_user_model/';
+            var userName = localStorage.getItem('username')
+            if(selectedCuisines!=null){
+                var favouriteCuisine={}
+                for(var i in selectedCuisines){
+                    favouriteCuisine[selectedCuisines[i]] = 1
+                }
+                alert(JSON.stringify(favouriteCuisine));
+            }
+
+            var userData = {
+                "user_name": userName,
+
+                "user_id": userName,
+
+                "favourite_cuisine": favouriteCuisine,
+
+                "shortterm_favourite_cuisine": {},
+
+                "is_vegan": false,
+
+                "like_spicy": true,
+
+                "allergen": selectedAllergians,
+
+                "favourite_restaurant": {},
+
+                "home_location": "Dublin",
+
+                "current_location": "Dublin",
+
+                "budget": {
+
+                    "weekdays": 15,
+
+                    "weekends": 30
+
+                }
+            }
+           var url = 'http://127.0.0.1:5000/second-breakfast/save_user_model/';
             fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(userData),
@@ -104,41 +146,46 @@
                     'Content-Type': 'application/json'
                 }
             }).then(res => res.json())
-                .then(response => console.log('Success:', JSON.stringify(response)))
-                .catch(error => console.error('Error:', error)); */            
-                window.location.href = "file:///C:/Raaz(D)/Trinity/AA/second-breakfast/flask/UI/recommendations.html";
+                .then(response => {
+
+                    console.log('Success:', JSON.stringify(response))
+                  window.location.href = "file:///C:/Raaz(D)/Trinity/AA/second-breakfast/flask/UI/recommendations.html";
+
+                })
+                .catch(error => console.error('Error:', error)); 
 
         }
-            function getSelectedData(divId, vals){
-                var boxes = document.getElementById(divId).getElementsByTagName('input');
-                for (var i = 0; i < boxes.length; ++i) {
-                    if (boxes[i].checked == true) {
-                        vals.push(boxes[i].value);
-                    }
+        function getSelectedData(divId, vals) {
+            var boxes = document.getElementById(divId).getElementsByTagName('input');
+            for (var i = 0; i < boxes.length; ++i) {
+                if (boxes[i].checked == true) {
+                    vals.push(boxes[i].value);
                 }
-            }                    
-        
+            }
+        }
+
     </script>
 </head>
 
 <body>
-        <div class="box">
-            <h1 style="text-align: center; font-weight: bold; color:black;">Second Breakast-Preferences</h1>
+    <div class="box">
+        <h1 style="text-align: center; font-weight: bold; color:black;">Second Breakast-Preferences</h1>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar" id="myBar"></div>
+    </div>
+    <input type="button" class="button1" id="btngetvalues" value="Submit"
+        onclick="getValues('cuisineDiv','allergiesDiv');" />
+    </div>
+    <div class="row">
+        <div class="column" style="background-color:#aaa;">
+            <h1>Cuisines</h1>
+
+            <div id='cuisineDiv'></Div>
         </div>
-        <div class="progress-container">
-            <div class="progress-bar" id="myBar"></div>
-        </div>
-       <input type="button" class="button1"  id="btngetvalues" value="Submit" onclick="getValues('cuisineDiv','allergiesDiv');" />
-        </div>
-        <div class="row">
-            <div class="column" style="background-color:#aaa;">
-                <h1>Cuisines</h1>
-                
-                <div id='cuisineDiv'></Div>
-            </div>
-            <div class="column" style="background-color:#bbb;">
-                <h1>Food Allergies</h1>
-                <div id='allergiesDiv'>
+        <div class="column" style="background-color:#bbb;">
+            <h1>Food Allergies</h1>
+            <div id='allergiesDiv'>
             </div>
         </div>
 </body>
