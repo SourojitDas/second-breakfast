@@ -199,7 +199,9 @@ def get_dashboard(userid):
     user_activity = get_user_activity(userid)
     model = get_user_model(userid)
     res = {}
-    res["activity_data"] = user_activity
+    res["activity_data"] = []
+    if user_activity != None:
+        res["activity_data"] = user_activity
     res["favourites"] = model["favourite_cuisine"]
     res["short_term_favourites"] = model["shortterm_favourite_cuisine"]
 
