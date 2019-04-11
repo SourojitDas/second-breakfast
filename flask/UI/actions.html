@@ -16,8 +16,24 @@
 </head>
 
 <body>
-    <button onclick="submit()">Submit</button>
-    <section id="imgGrid"></section>
+    <div class="box"> 
+        <h3 style="text-align: center; font-weight: bold; color:black;">Second Breakast</h3>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar" id="myBar"></div>
+        </div>
+    <button class="button1" onclick="submit()">Submit</button>
+    <div class="row">
+        <div class="column">
+            <section id="imgGrid"></section>
+        </div>
+        <div class="column">
+            <section id="imgGrid1"></section>
+        </div>
+        <div class="column">
+            <section id="imgGrid2"></section>
+        </div>
+    </div>
 
     <script>
         var selectedMap = new Map()
@@ -25,7 +41,9 @@
             var data = jQuery.parseJSON(localStorage.getItem('imageDataKey'));
 
             console.log("in html", data)
+            dataLength=data.length/3;
             var finalContent = "";
+           
             data.forEach(function (d) {
                 var sp = ("<image style=" + "imgcl" + " src=" + d.img + ">"
                     + "<br>" + "<br>"
@@ -37,38 +55,39 @@
                 finalContent = finalContent + sp
             })
             document.getElementById("imgGrid").innerHTML = finalContent;
-
+            document.getElementById("imgGrid1").innerHTML = finalContent;
+            document.getElementById("imgGrid2").innerHTML = finalContent;
         }
-        function addValue(id,cuisine,imgURL, action) {
-             var color
-            if(action==1){
-                color = document.getElementById("like_"+id);
-                color.className='button1'
+        function addValue(id, cuisine, imgURL, action) {
+            var color
+            if (action == 1) {
+                color = document.getElementById("like_" + id);
+                color.className = 'button1'
                 color = document.getElementById("dislike_" + id);
                 color.className = 'button2'
-            }else{
-                color = document.getElementById("dislike_"+id);
+            } else {
+                color = document.getElementById("dislike_" + id);
                 color.className = 'button1'
                 color = document.getElementById("like_" + id);
                 color.className = 'button3'
             }
-           
-            value={"cuisine_id": id, "cuisine": cuisine,"action":action, "image_URL": imgURL}
-            var did= id + "_" + cuisine;
-                selectedMap.set(did,value)
-                console.log(selectedMap)
+
+            value = { "cuisine_id": id, "cuisine": cuisine, "action": action, "image_URL": imgURL }
+            var did = id + "_" + cuisine;
+            selectedMap.set(did, value)
+            console.log(selectedMap)
         }
-        function submit(){
+        function submit() {
             var filteredList = []
             for (let [k, v] of selectedMap) {
-                if(v.action==1){
+                if (v.action == 1) {
                     filteredList.push(v)
                 }
             }
             console.log(filteredList)
             var userName = localStorage.getItem('username')
             var userData = {
-                "user_name": userName+123,
+                "user_name": userName + 123,
 
                 "user_id": "uid123456",
 
@@ -126,6 +145,7 @@
                 .catch(error => console.error('Error:', error));*/
 
         }
+        
     </script>
 </body>
 
