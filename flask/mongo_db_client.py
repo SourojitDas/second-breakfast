@@ -2,7 +2,7 @@ import json
 from bson import json_util
 import pymongo
 import re
-import adaption
+from adaption import adjust_model
 import math
 import time
 
@@ -44,8 +44,10 @@ def save_user_activity(activity):
     activity_collection.insert(activity)
 
 def update_user_model(user_id, long_model, short_model):
-    user_models_collection.findOneAndUpdate({"user_id": id}, {"$set":{"favorite_cuisine": long_model,
-                                                                      "shortterm_favourite_cuisine": short_model}})
+    user_models_collection.find_one_and_update({"user_id": user_id},
+                                               {"$set": {"favourite_cuisine": dict(long_model),
+                                               "shortterm_favourite_cuisine": dict(short_model)
+                                               }})
 # def save_business_data():
 #     with open('Business.json') as business_json:
 #         business_data = json.load(business_json)
@@ -169,22 +171,14 @@ def track_activity(req_data):
     new_long_term_value = 0
 
     if action_cusine in fav_cuisine.keys():
-        if action == 'like':
-            new_short_term_value = adaption.get_new_value_for_short_term_attribute('like', fav_cuisine[action_cusine])
-            new_long_term_value = adaption.get_new_value_for_long_term_attribute('like', fav_cuisine[action_cusine])
-        if action == 'dislike':
-            new_short_term_value = adaption.get_new_value_for_short_term_attribute('dislike', fav_cuisine[action_cusine])
-            new_long_term_value = adaption.get_new_value_for_long_term_attribute('dislike', fav_cuisine[action_cusine])
+        new_short_term_value = adjust_model.get_new_value_for_short_term_attribute(action, fav_cuisine[action_cusine])
+        new_long_term_value = adjust_model.get_new_value_for_long_term_attribute(action, fav_cuisine[action_cusine])
         short_term_fav_cuisine[action_cusine] = new_short_term_value
         fav_cuisine[action_cusine] = new_long_term_value
     else:
-        if action == 'like':
-            new_short_term_value = adaption.get_new_value_for_short_term_attribute('like', 0)
-            new_long_term_value = adaption.get_new_value_for_long_term_attribute('like', 0)
-        if action == 'dislike':
-            new_short_term_value = adaption.get_new_value_for_short_term_attribute('dislike', 0)
-            new_long_term_value = adaption.get_new_value_for_long_term_attribute('dislike', 0)
-            fav_cuisine[action_cusine] = new_short_term_value
+        new_short_term_value = adjust_model.get_new_value_for_short_term_attribute(action, 0)
+        new_long_term_value = adjust_model.get_new_value_for_long_term_attribute(action, 0)
+        # fav_cuisine[action_cusine] = new_short_term_value
         short_term_fav_cuisine[action_cusine] = new_short_term_value
         fav_cuisine[action_cusine] = new_long_term_value
     update_user_model(user_id, fav_cuisine, short_term_fav_cuisine)

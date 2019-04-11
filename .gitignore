@@ -3,3 +3,4 @@ myLib
 *.pyc
 .vscode
 config.json
+__pycache__
