@@ -159,6 +159,51 @@ def get_recommendation(user_id):
     return recommendations
 
 
+def get_explorations(user_id):
+    user_model = get_user_model(user_id)
+    # print(user_model)
+    user_fav_cuisine = user_model['favourite_cuisine']
+    user_short_term_cuisine = user_model['shortterm_favourite_cuisine']
+    recommendations = []
+    # allergens = ["Soy", "Butter", "Cheese"]
+    allergens = user_model["allergen"]
+    cuisine_explore = list(set(cuisine_static_list) - set(user_fav_cuisine.keys()) - set(user_short_term_cuisine.keys()))
+    for cuisine in user_fav_cuisine:
+        if cuisine in user_model['favourite_cuisine'] and user_model['favourite_cuisine'][cuisine] < 1:
+            cuisine_explore.append(cuisine)
+    for cuisine in user_short_term_cuisine:
+        if cuisine in user_model['shortterm_favourite_cuisine'] and user_model['shortterm_favourite_cuisine'][cuisine] < 1:
+            cuisine_explore.append(cuisine)
+    regexes = []
+    for item in allergens:
+        regexes.append(re.compile(".*" + item + ".*", re.IGNORECASE))
+    sumVal = sum(user_fav_cuisine.values())
+    sumValShort = sum(user_short_term_cuisine.values())
+    reco_fav = []
+    reco_short = []
+    reco_explore = []
+    for cuisine in cuisine_explore:
+            reco_explore.extend(list(recipe_collection.aggregate(
+            [{"$match": {"attributes.cuisine": cuisine}},
+             {"$sample": {"size": 50}},
+             {"$project": {"_id": 1, "ingredientLines": 1, "images": 1, "attributes": 1, "name": 1}}])))
+
+    res = []
+    for elem in reco_explore:
+        temp = {}
+        temp["cuisine"] = elem["attributes"]["cuisine"][0]
+        temp["_id"] = str(elem["_id"])
+        temp["img"] = elem["images"][0]["hostedLargeUrl"]
+        temp["name"] = elem["name"]
+        temp["reasoning"] = "explore_favourite"
+        res.append(temp)
+    recommendations = recommendations + res
+    shuffle(recommendations)
+    # result =json.dumps(recommendations)
+
+    return recommendations
+
+
 def track_activity(req_data):
     activity_data = req_data
     ts = time.time()
