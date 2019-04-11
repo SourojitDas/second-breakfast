@@ -2,3 +2,4 @@ myLib
 .idea
 *.pyc
 .vscode
+config.json

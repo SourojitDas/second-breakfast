@@ -5,15 +5,15 @@ import re
 import adaption
 
 import os
-username = "AA"
-password = "hayabusa"
-connection = pymongo.MongoClient("vm-18-202-35-71.rosettavm.com:27017",
-                     username='AA',
-                     password='hayabusa',
-                     authSource='admin',
-                     authMechanism='SCRAM-SHA-256')
+from config_loader import config
 
-db = connection["sophie_dev_1"]
+connection = pymongo.MongoClient(config['mongo']['host'],
+                     username=config['mongo']['username'],
+                     password=config['mongo']['password'],
+                     authSource=config['mongo']['authSource'],
+                     authMechanism=config['mongo']['authMechanism'])
+
+db = connection[config['mongo']['db']]
 user_collection = db["users"]
 user_models_collection = db["user-models"]
 business_collection = db['business']
