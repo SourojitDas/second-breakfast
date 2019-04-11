@@ -28,6 +28,11 @@ def recommend():
 def test():
     return mongo_db_client.get_recommendation("uid01")
 
+@app.route("/second-breakfast/test/", method=["POST"])
+def statsitics():
+    req_data = request.get_json()
+    return mongo_db_client.get_dashboard(req_data["user_id"])
+
 if __name__ == '__main__':
     app.run(debug=True)
 
