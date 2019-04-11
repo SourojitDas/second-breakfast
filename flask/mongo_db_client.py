@@ -34,8 +34,11 @@ def save_user_details(user, user_model):
     user_models_collection.insert(user_model)
 
 def save_user_model(model):
-    new_user = user_models_collection.insert_one(model)
-    return new_user
+    insertion_result = user_models_collection.insert_one(model)
+    inserted_id = insertion_result.inserted_id
+    new_user = user_models_collection.find_one({'_id': inserted_id})
+    del new_user["_id"]
+    return dict(new_user)
 
 def get_user_activity(user_id):
     return activity_collection.find({"user_id": user_id})
