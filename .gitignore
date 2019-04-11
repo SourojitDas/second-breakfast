@@ -1,3 +1,4 @@
 myLib
 .idea
 *.pyc
+*.vscode
