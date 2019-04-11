@@ -13,59 +13,64 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <style>
-    @import url(https://fonts.googleapis.com/css?family=Roboto);
+        @import url(https://fonts.googleapis.com/css?family=Roboto);
 
-/* ----- Page Styling ----- */
-/* -- Irrelevant to Pen. Scroll down. -- */
-   
-  .img-wrap {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-  }
+        /* ----- Page Styling ----- */
+        /* -- Irrelevant to Pen. Scroll down. -- */
 
-  .img { display: block; }
+        .img-wrap {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
 
-  h1 {
-    text-align: center;
-    text-transform: uppercase;
-    font-weight: 400;
-    letter-spacing: 2px;
-    font-size: 24px;
-  }
+        .img {
+            display: block;
+        }
 
-/* ----- Style the elements ----- */
+        h1 {
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: 400;
+            letter-spacing: 2px;
+            font-size: 24px;
+        }
 
-  /* Wrap the image and alt text */
-  /* Will be added with js */
-    .alt-wrap { 
-      display: block;
-      position: relative;
-      margin: 20px;
-      color: whitesmoke;
-      border: 1px solid mediumorchid;
-    }
+        /* ----- Style the elements ----- */
 
-  /* The alt text itself */
-  /* Will be added with js */
-    .alt-wrap p.alt {
-      position: absolute;
-      opacity: 0; /* hide initially */
-      left: 0; right: 0; bottom: 0;
-      margin: 0;
-      padding: 15px;
-      font-size: 14px;
-      line-height: 22px;
-      background-color: rgba(0,0,0,0.8);
-      transition: all 300ms ease;
-      transition-delay: 300ms;
-    }
+        /* Wrap the image and alt text */
+        /* Will be added with js */
+        .alt-wrap {
+            display: block;
+            position: relative;
+            margin: 20px;
+            color: whitesmoke;
+            border: 1px solid mediumorchid;
+        }
 
-  /* Hovering over the wrapper shows its alt p*/
-    .alt-wrap:hover > p.alt { 
-      opacity: 1; 
-      transition-delay: 0s;
-    }
+        /* The alt text itself */
+        /* Will be added with js */
+        .alt-wrap p.alt {
+            position: absolute;
+            opacity: 0;
+            /* hide initially */
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            padding: 15px;
+            font-size: 14px;
+            line-height: 22px;
+            background-color: rgba(0, 0, 0, 0.8);
+            transition: all 300ms ease;
+            transition-delay: 300ms;
+        }
+
+        /* Hovering over the wrapper shows its alt p*/
+        .alt-wrap:hover>p.alt {
+            opacity: 1;
+            transition-delay: 0s;
+        }
     </style>
 </head>
 
@@ -77,12 +82,12 @@
         <div class="progress-bar" id="myBar"></div>
     </div>
     <button class="button1" onclick="submit()">Submit</button>
-    
-        <h1>Recommendation System</h1>
+
+    <h1>Recommendation System</h1>
     <div class="row">
         <div class="column">
             <div class="img-wrap">
-                <div id="imge"></div>
+                <div id="imge0"></div>
             </div>
         </div>
         <div class="column">
@@ -102,32 +107,57 @@
         </div>
     </div>
 
-    
+
 
     <script>
         var selectedMap = new Map()
         window.onload = function () {
-            var data = jQuery.parseJSON(localStorage.getItem('reccomData'));
-
+            var data = ""
+            fetch('http://127.0.0.1:5000/second-breakfast/recommendation/uid01/')
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (myJson) {
+                    data = myJson
+                    //localStorage.setItem('reccomData', JSON.stringify(myJson));
+                
+            //var data = jQuery.parseJSON(localStorage.getItem('reccomData'));
             console.log("in html", data)
-            dataLength = data.length / 3;
+            const columns = 4
+            const rows = Math.round(data.length / columns)
+            console.log(rows, columns)
             var finalContent = "";
 
-            data.favourite.forEach(function (d) {
-                var sp = ("<image class=" + "img" + " src=" + d.img + " alt=" + d.reasoning + ">"
-                    + "<br>" + "<br>"
-                    + "<span> " + d.name + " </span>"
-                    + "<br>" + "<br>"
-                    + "<button id=" + "like_" + d._id + "  class=" + "button3" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,1)\">Like</button>"
-                    + "<button id=" + "dislike_" + d._id + " class=" + "button2" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,0)\">Dislike</button>"
-                );
-                finalContent = finalContent + sp
-            })
-            document.getElementById("imge").innerHTML = finalContent;
-            document.getElementById("imge1").innerHTML = finalContent;
-            document.getElementById("imge2").innerHTML = finalContent;
-            document.getElementById("imge3").innerHTML = finalContent;
-             $(".img").wrap('<div class="alt-wrap"/>');
+            /*  data.forEach(function (d) {
+                 var sp = ("<image class=" + "img" + " src=" + d.img + " alt=" + d.reasoning + ">"
+                     + "<br>" + "<br>"
+                     + "<span> " + d.name + " </span>"
+                     + "<br>" + "<br>"
+                     + "<button id=" + "like_" + d._id + "  class=" + "button3" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,1)\">Like</button>"
+                     + "<button id=" + "dislike_" + d._id + " class=" + "button2" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,0)\">Dislike</button>"
+                 );
+                 finalContent = finalContent + sp
+             }) */
+            for (let i = 0; i < columns; i++) {
+                console.log("in outer")
+                let finalContent = ""
+                for (let j = 0; j < rows; j++) {
+                    console.log("in inner")
+                    d = data[(i * columns) + j]
+                    var sp = ("<image class=" + "img" + " src=" + d.img + " alt=" + d.reasoning + ">"
+                        + "<br>" + "<br>"
+                        + "<span> " + d.name + " </span>"
+                        + "<br>" + "<br>"
+                        + "<button id=" + "like_" + d._id + "  class=" + "button3" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,1)\">Like</button>"
+                        + "<button id=" + "dislike_" + d._id + " class=" + "button2" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,0)\">Dislike</button>"
+                        + "<button id=" + "notInterested_" + d._id + " class=" + "button4" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,2)\">Not Interested</button>"
+                    );
+                    finalContent = finalContent + sp
+                }
+                document.getElementById("imge" + i).innerHTML = finalContent;
+            }
+                    console.log("after")
+            $(".img").wrap('<div class="alt-wrap"/>');
 
             // Add alt text after each .img
             // 1. For all items with class .img...
@@ -139,20 +169,52 @@
             })
             /* document.getElementById("imgGrid1").innerHTML = finalContent;
             document.getElementById("imgGrid2").innerHTML = finalContent; */
+                });
         }
         function addValue(id, cuisine, imgURL, action) {
             var color
+            var value
             if (action == 1) {
+                value="like"
                 color = document.getElementById("like_" + id);
                 color.className = 'button1'
                 color = document.getElementById("dislike_" + id);
                 color.className = 'button2'
-            } else {
+            } else if(action==0){
+                value = "dislike"
                 color = document.getElementById("dislike_" + id);
                 color.className = 'button1'
                 color = document.getElementById("like_" + id);
                 color.className = 'button3'
             }
+            else if (action == 3) {
+                value = "not_interested"
+                color = document.getElementById("notInterested_" + id);
+                color.className = 'button5'
+            }
+            var updateData = {
+
+                "user_id": "uid01",
+
+                "timestamp": Date.now,
+
+                "cuisine": cuisine,
+
+                "action": value,
+
+                "imgURL":imgURL
+
+            }
+            var url = 'http://127.0.0.1:5000/second-breakfast/activity/';
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(updateData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => res.json())
+                .then(response => console.log('Success:', JSON.stringify(response)))
+                .catch(error => console.error('Error:', error));
 
             value = { "cuisine_id": id, "cuisine": cuisine, "action": action, "image_URL": imgURL }
             var did = id + "_" + cuisine;
@@ -168,69 +230,13 @@
             }
             console.log(filteredList)
             var userName = localStorage.getItem('username')
-            var userData = {
-                "user_name": userName + 123,
-
-                "user_id": "uid123456",
-
-                "favourite_cuisine": {
-
-                    "Indian": 43,
-
-                    "Mexican": 27,
-
-                    "Italian": 30
-
-                },
-
-                "shortterm_favourite_cuisine": {},
-
-                "is_vegan": "False",
-
-                "like_spicy": "True",
-
-                "allergen": ["Tree nut", "Soy"],
-
-                "favourite_restaurant": {
-
-                    "restaurant 1": 26,
-
-                    "restaurant 2": 34,
-
-                    "restaurant 3": 40
-
-                },
-
-                "home_location": "Dublin",
-
-                "current_location": "Dublin",
-
-                "budget": {
-
-                    "weekdays": 15,
-
-                    "weekends": 30
-
-                },
-                "user_preferences": filteredList
-
-            }
-            /*var url = 'http://127.0.0.1:5000/second-breakfast/save_user_model/';
-            fetch(url, {
-                method: 'POST', 
-                body: JSON.stringify(userData),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(res => res.json())
-                .then(response => console.log('Success:', JSON.stringify(response)))
-                .catch(error => console.error('Error:', error));*/
-
+            
+            
         }
     // Wrap every .img in a div
     // 1. For all items with class .img...
     // 2. Wrap them in a div
-   
+
 
 // CSS shows/hides the alt text on hover
 

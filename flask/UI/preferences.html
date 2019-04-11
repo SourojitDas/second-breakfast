@@ -105,17 +105,9 @@
                 }
             }).then(res => res.json())
                 .then(response => console.log('Success:', JSON.stringify(response)))
-                .catch(error => console.error('Error:', error)); */
-                alert()
-            fetch('http://127.0.0.1:5000/second-breakfast/recommendation/uid01/')
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (myJson) {
-                    console.log(JSON.stringify(myJson))
-                    localStorage.setItem('reccomData', JSON.stringify(myJson));
-                });
-            window.location.href = "file:///C:/Raaz(D)/Trinity/AA/second-breakfast/flask/UI/actions.html";
+                .catch(error => console.error('Error:', error)); */            
+                window.location.href = "file:///C:/Raaz(D)/Trinity/AA/second-breakfast/flask/UI/recommendations.html";
+
         }
             function getSelectedData(divId, vals){
                 var boxes = document.getElementById(divId).getElementsByTagName('input');

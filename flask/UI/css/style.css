@@ -677,6 +677,28 @@ body {
             display: inline-block;
             font-size: 16px;
         }
+        .button4 {
+            background-color: maroon;
+            /* Green */
+            border: none;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+             border: 2px solid yellow;
+            display: inline-block;
+            font-size: 16px;
+        }
+        .button5 {
+            background-color: red;
+            /* Green */
+            border: none;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+             border: 2px solid yellow;
+            display: inline-block;
+            font-size: 16px;
+        }
         * {
   box-sizing: border-box;
 }
