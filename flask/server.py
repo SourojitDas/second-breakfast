@@ -44,12 +44,12 @@ def test():
         mimetype='application/json'
     )
 
-@app.route("/second-breakfast/statsitics/", methods=['POST'])
-def statsitics():
-    req_data = request.get_json()
-    print(req_data)
+@app.route("/second-breakfast/statistics/<uid01>")
+def statsitics(uid01):
+    # req_data = request.get_json()
+    # print(req_data)
     return app.response_class(
-        response=mongo_db_client.get_dashboard(req_data['user_id']),
+        response=mongo_db_client.get_dashboard(uid01),
         mimetype='application/json'
     )
 
