@@ -49,6 +49,7 @@
         }
     </style>
     <script language="javascript">
+        var userName= localStorage.getItem('username');
         window.onload = function createchkboxes() {
             var cuisineData = ["American", "Asian", "Barbecue", "Cajun & Creole", "Chinese", "Cuban", "English", "French",
                 "German", "Greek", "Hawaiian", "Hungarian", "Indian", "Irish", "Italian", "Japanese", "Kid-Friendly",
@@ -94,8 +95,26 @@
                     getSelectedData(allergiesDiv,selectedAllergians)
                 }
             }
-            alert(selectedCuisines.join('\n'));
-            alert(selectedAllergians.join('\n'));
+            /* var userData={"preferedCuisines": selectedCuisines, "allergians": selectedAllergians}
+            var url = 'http://127.0.0.1:5000/second-breakfast/save_user_model/';
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(userData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => res.json())
+                .then(response => console.log('Success:', JSON.stringify(response)))
+                .catch(error => console.error('Error:', error)); */
+                alert()
+            fetch('http://127.0.0.1:5000/second-breakfast/recommendation/uid01/')
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (myJson) {
+                    console.log(JSON.stringify(myJson))
+                    localStorage.setItem('reccomData', JSON.stringify(myJson));
+                });
             window.location.href = "file:///C:/Raaz(D)/Trinity/AA/second-breakfast/flask/UI/actions.html";
         }
             function getSelectedData(divId, vals){
