@@ -7,6 +7,7 @@ LONG_TERM_OFFSET=0.1
 SLOW_FADE_OFFSET=0.01
 QUICK_FADE_OFFSET=0.1
 BLOCKAGE_PENALTY=-100
+FADE_LIMIT=1
 
 class Actions(Enum):
   LIKE = "like"
@@ -36,8 +37,22 @@ def get_new_value_for_attribute (action, currentAttributeValue, offset):
   else:
     return newAttributeValue
 
+def get_faded_value_for_attribute (currentAttributeValue, offset):
+  if (currentAttributeValue == FADE_LIMIT):
+    return currentAttributeValue
+
+  penalty = -offset
+  newAttributeValue = currentAttributeValue + penalty
+  return newAttributeValue
+
 def get_new_value_for_short_term_attribute (action, currentAttributeValue):
   return get_new_value_for_attribute(action, currentAttributeValue, SHORT_TERM_OFFSET)
 
 def get_new_value_for_long_term_attribute (action, currentAttributeValue):
   return get_new_value_for_attribute(action, currentAttributeValue, LONG_TERM_OFFSET)
+
+def get_faded_value_for_short_term_attribute (currentAttributeValue):
+  return get_faded_value_for_attribute(currentAttributeValue, QUICK_FADE_OFFSET)
+
+def get_faded_value_for_long_term_attribute (currentAttributeValue):
+  return get_faded_value_for_attribute(currentAttributeValue, SLOW_FADE_OFFSET)
