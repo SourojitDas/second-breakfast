@@ -243,18 +243,20 @@ def track_activity(req_data):
 def modify_long_term_model(user_id, long_model):
     long_model_modified = {}
     for i in long_model:
-        if long_model[i] > 0:
-            long_model_modified[i] =  long_model[i]
+        if float(long_model[i]) > 0:
+            long_model_modified[i] =  float(long_model[i])
     new_user_model = user_models_collection.find_one_and_update({"user_id": user_id},
                                                {"$set": {"favourite_cuisine": dict(long_model_modified)}},
                                                return_document=ReturnDocument.AFTER)
     del new_user_model['_id']
+    print(new_user_model)
     return new_user_model
 
 def get_dashboard(userid):
     user_activity = get_user_activity(userid)
     model = get_user_model(userid)
     res = {}
+    res["allergen"] = model["allergen"]
     res["activity_data"] = []
     if user_activity != None:
         res["activity_data"] = user_activity
