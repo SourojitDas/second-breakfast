@@ -648,16 +648,29 @@ body {
             color: white;
             text-align: center;
             text-decoration: none;
+             border: 2px solid yellow;
             display: inline-block;
             font-size: 16px;
         }
         .button2 {
-            background-color: red;
+            background-color: blue;
             /* Green */
             border: none;
             color: white;
             text-align: center;
             text-decoration: none;
+            border: 2px solid yellow;
+            display: inline-block;
+            font-size: 16px;
+        }
+        .button3 {
+            background-color: blue;
+            /* Green */
+            border: none;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+             border: 2px solid yellow;
             display: inline-block;
             font-size: 16px;
         }

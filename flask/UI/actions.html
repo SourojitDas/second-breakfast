@@ -31,8 +31,8 @@
                     + "<br>" + "<br>"
                     + "<span> " + d.name + " </span>"
                     + "<br>" + "<br>"
-                    + "<button id=" + "like_+" + d._id + "  class=" + "button1" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,1)\">Like</button>"
-                    + "<button id=" + "dislike_+" + d._id + " class=" + "button2" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,0)\">Dislike</button>"
+                    + "<button id=" + "like_" + d._id + "  class=" + "button3" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,1)\">Like</button>"
+                    + "<button id=" + "dislike_" + d._id + " class=" + "button2" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,0)\">Dislike</button>"
                 );
                 finalContent = finalContent + sp
             })
@@ -40,6 +40,19 @@
 
         }
         function addValue(id,cuisine,imgURL, action) {
+             var color
+            if(action==1){
+                color = document.getElementById("like_"+id);
+                color.className='button1'
+                color = document.getElementById("dislike_" + id);
+                color.className = 'button2'
+            }else{
+                color = document.getElementById("dislike_"+id);
+                color.className = 'button1'
+                color = document.getElementById("like_" + id);
+                color.className = 'button3'
+            }
+           
             value={"cuisine_id": id, "cuisine": cuisine,"action":action, "image_URL": imgURL}
             var did= id + "_" + cuisine;
                 selectedMap.set(did,value)
