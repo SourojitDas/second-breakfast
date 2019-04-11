@@ -222,14 +222,23 @@ def track_activity(req_data):
     if action_cusine in fav_cuisine.keys():
         new_short_term_value = adjust_model.get_new_value_for_short_term_attribute(action, fav_cuisine[action_cusine])
         new_long_term_value = adjust_model.get_new_value_for_long_term_attribute(action, fav_cuisine[action_cusine])
-        short_term_fav_cuisine[action_cusine] = new_short_term_value
-        fav_cuisine[action_cusine] = new_long_term_value
+        # short_term_fav_cuisine[action_cusine] = new_short_term_value
+        # fav_cuisine[action_cusine] = new_long_term_value
     else:
         new_short_term_value = adjust_model.get_new_value_for_short_term_attribute(action, 0)
         new_long_term_value = adjust_model.get_new_value_for_long_term_attribute(action, 0)
-        # fav_cuisine[action_cusine] = new_short_term_value
+        # short_term_fav_cuisine[action_cusine] = new_short_term_value
+        # fav_cuisine[action_cusine] = new_long_term_value
+    if new_short_term_value==0:
+        del short_term_fav_cuisine[action_cusine]
+    else:
         short_term_fav_cuisine[action_cusine] = new_short_term_value
+
+    if new_long_term_value==0:
+        del fav_cuisine[action_cusine]
+    else:
         fav_cuisine[action_cusine] = new_long_term_value
+
     update_user_model(user_id, fav_cuisine, short_term_fav_cuisine)
     return "ok"
 
