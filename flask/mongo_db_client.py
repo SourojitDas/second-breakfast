@@ -5,6 +5,7 @@ import re
 from adaption import adjust_model
 import math
 import time
+from random import shuffle
 
 import os
 from config_loader import config
@@ -33,12 +34,11 @@ def save_user_details(user, user_model):
     user_models_collection.insert(user_model)
 
 def save_user_model(model):
-    user_models_collection.insert(model)
-    return "Saved"
+    new_user = user_models_collection.insert_one(model)
+    return new_user
 
 def get_user_activity(user_id):
-    activity_collection.find({"user_id": user_id})
-
+    return activity_collection.find({"user_id": user_id})
 
 def save_user_activity(activity):
     activity_collection.insert(activity)
@@ -80,9 +80,9 @@ def get_data_to_set_pref():
             temp["img"] = elem["images"][0]["hostedLargeUrl"]
             temp["name"] = elem["name"]
             li.append(temp)
-    result = json.dumps(li)
+    # result = json.dumps(li)
     # print(data)
-    return result
+    return li
 
 
 def get_user_model(userid):
@@ -90,10 +90,10 @@ def get_user_model(userid):
 
 def get_recommendation(user_id):
     user_model = get_user_model(user_id)
-    print(user_model)
+    # print(user_model)
     user_fav_cuisine = user_model['favourite_cuisine']
     user_short_term_cuisine = user_model['shortterm_favourite_cuisine']
-    recommendations = {}
+    recommendations = []
     # allergens = ["Soy", "Butter", "Cheese"]
     allergens = user_model["allergen"]
     cuisine_explore = list(set(cuisine_static_list) - set(user_fav_cuisine.keys()) - set(user_short_term_cuisine.keys()))
@@ -130,8 +130,9 @@ def get_recommendation(user_id):
         temp["_id"] = str(elem["_id"])
         temp["img"] = elem["images"][0]["hostedLargeUrl"]
         temp["name"] = elem["name"]
+        temp["reasoning"] = "favourite"
         res.append(temp)
-    recommendations["favourite"] = res
+    recommendations = recommendations + res
     res = []
     for elem in reco_short:
         temp = {}
@@ -139,8 +140,9 @@ def get_recommendation(user_id):
         temp["_id"] = str(elem["_id"])
         temp["img"] = elem["images"][0]["hostedLargeUrl"]
         temp["name"] = elem["name"]
+        temp["reasoning"] = "short_favourite"
         res.append(temp)
-    recommendations["short_favourite"] = res
+    recommendations = recommendations + res
     res = []
     for elem in reco_explore:
         temp = {}
@@ -148,11 +150,13 @@ def get_recommendation(user_id):
         temp["_id"] = str(elem["_id"])
         temp["img"] = elem["images"][0]["hostedLargeUrl"]
         temp["name"] = elem["name"]
+        temp["reasoning"] = "explore_favourite"
         res.append(temp)
-    recommendations["explore_favourite"] = res
-    result =json.dumps(recommendations)
+    recommendations = recommendations + res
+    shuffle(recommendations)
+    # result =json.dumps(recommendations)
 
-    return result
+    return recommendations
 
 
 def track_activity(req_data):
@@ -195,7 +199,8 @@ def get_dashboard(userid):
     res["favourites"] = model["favourite_cuisine"]
     res["short_term_favourites"] = model["shortterm_favourite_cuisine"]
 
-    return json.dumps(res)
+    # return json.dumps(res)
+    return res
 
 
 
