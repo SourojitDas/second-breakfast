@@ -6,7 +6,7 @@ from adaption import adjust_model
 import math
 import time
 from random import shuffle
-
+from pymongo import ReturnDocument
 import os
 from config_loader import config
 
@@ -41,7 +41,7 @@ def save_user_model(model):
     return dict(new_user)
 
 def get_user_activity(user_id):
-    return activity_collection.find({"user_id": user_id})
+    return list(activity_collection.find({"user_id": user_id}, {"_id": 0}))
 
 def save_user_activity(activity):
     activity_collection.insert(activity)
@@ -111,7 +111,7 @@ def get_recommendation(user_id):
     for cuisine, value in user_fav_cuisine.items():
         if value >= 0:
             reco_fav.extend(list(recipe_collection.aggregate([{"$match":{"attributes.cuisine":cuisine,"ingredientLines": { "$nin": regexes }}},
-                    {"$sample":{"size": (int(value)/sumVal) * 30}},
+                    {"$sample":{"size": ((int(value)/sumVal) * 30) - 2}},
                     { "$project" : { "_id" : 1 , "ingredientLines" : 1, "images":1, "attributes": 1, "name": 1 }}])))
     for cuisine, value in user_short_term_cuisine.items():
         if value >= 0:
@@ -161,7 +161,6 @@ def get_recommendation(user_id):
 
     return recommendations
 
-
 def get_explorations(user_id):
     user_model = get_user_model(user_id)
     # print(user_model)
@@ -188,7 +187,7 @@ def get_explorations(user_id):
     for cuisine in cuisine_explore:
             reco_explore.extend(list(recipe_collection.aggregate(
             [{"$match": {"attributes.cuisine": cuisine}},
-             {"$sample": {"size": 50}},
+             {"$sample": {"size": 48}},
              {"$project": {"_id": 1, "ingredientLines": 1, "images": 1, "attributes": 1, "name": 1}}])))
 
     res = []
@@ -205,7 +204,6 @@ def get_explorations(user_id):
     # result =json.dumps(recommendations)
 
     return recommendations
-
 
 def track_activity(req_data):
     activity_data = req_data
@@ -225,17 +223,36 @@ def track_activity(req_data):
     if action_cusine in fav_cuisine.keys():
         new_short_term_value = adjust_model.get_new_value_for_short_term_attribute(action, fav_cuisine[action_cusine])
         new_long_term_value = adjust_model.get_new_value_for_long_term_attribute(action, fav_cuisine[action_cusine])
-        short_term_fav_cuisine[action_cusine] = new_short_term_value
-        fav_cuisine[action_cusine] = new_long_term_value
+        # short_term_fav_cuisine[action_cusine] = new_short_term_value
+        # fav_cuisine[action_cusine] = new_long_term_value
     else:
         new_short_term_value = adjust_model.get_new_value_for_short_term_attribute(action, 0)
         new_long_term_value = adjust_model.get_new_value_for_long_term_attribute(action, 0)
-        # fav_cuisine[action_cusine] = new_short_term_value
+        # short_term_fav_cuisine[action_cusine] = new_short_term_value
+        # fav_cuisine[action_cusine] = new_long_term_value
+    if new_short_term_value==0:
+        del short_term_fav_cuisine[action_cusine]
+    else:
         short_term_fav_cuisine[action_cusine] = new_short_term_value
+
+    if new_long_term_value==0:
+        del fav_cuisine[action_cusine]
+    else:
         fav_cuisine[action_cusine] = new_long_term_value
+
     update_user_model(user_id, fav_cuisine, short_term_fav_cuisine)
     return "ok"
 
+def modify_long_term_model(user_id, long_model):
+    long_model_modified = {}
+    for i in long_model:
+        if long_model[i] > 0:
+            long_model_modified[i] =  long_model[i]
+    new_user_model = user_models_collection.find_one_and_update({"user_id": user_id},
+                                               {"$set": {"favourite_cuisine": dict(long_model_modified)}},
+                                               return_document=ReturnDocument.AFTER)
+    del new_user_model['_id']
+    return new_user_model
 
 def get_dashboard(userid):
     user_activity = get_user_activity(userid)
@@ -246,7 +263,7 @@ def get_dashboard(userid):
         res["activity_data"] = user_activity
     res["favourites"] = model["favourite_cuisine"]
     res["short_term_favourites"] = model["shortterm_favourite_cuisine"]
-
+    # print(res)
     # return json.dumps(res)
     return res
 

@@ -25,6 +25,12 @@ def save_new_user_model():
     req_data = request.get_json()
     return send_json_response(mongo_db_client.save_user_model(req_data))
 
+@app.route("/second-breakfast/modify", methods=['POST'])
+@app.route("/second-breakfast/modify/", methods=['POST'])
+def modify_long_term_model():
+    req_data = request.get_json()
+    return send_json_response(mongo_db_client.modify_long_term_model(req_data["user_id"], req_data["attributes"]))
+
 @app.route("/second-breakfast/activity", methods=['POST'])
 @app.route("/second-breakfast/activity/", methods=['POST'])
 def submit_activity():
@@ -49,5 +55,5 @@ def statistics(uid):
     return send_json_response(mongo_db_client.get_dashboard(uid))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
 
