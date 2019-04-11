@@ -1,4 +1,6 @@
 myLib
 .idea
 *.pyc
-*.vscode
+.vscode
+config.json
+__pycache__

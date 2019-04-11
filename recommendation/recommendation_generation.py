@@ -23,6 +23,5 @@ for key, value in user_fav_cuisine.items():
 
 print(population)
 print(weight)
-# print(choices(population, weight))
 for i in range(0, 10):
     print(choices(population, weight))
