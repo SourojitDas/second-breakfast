@@ -38,7 +38,7 @@ def save_user_model(model):
     return new_user
 
 def get_user_activity(user_id):
-    return activity_collection.find({"user_id": user_id})
+    return list(activity_collection.find({"user_id": user_id}, {"_id": 0}))
 
 def save_user_activity(activity):
     activity_collection.insert(activity)
@@ -108,7 +108,7 @@ def get_recommendation(user_id):
     for cuisine, value in user_fav_cuisine.items():
         if value >= 0:
             reco_fav.extend(list(recipe_collection.aggregate([{"$match":{"attributes.cuisine":cuisine,"ingredientLines": { "$nin": regexes }}},
-                    {"$sample":{"size": (int(value)/sumVal) * 30}},
+                    {"$sample":{"size": ((int(value)/sumVal) * 30) - 2}},
                     { "$project" : { "_id" : 1 , "ingredientLines" : 1, "images":1, "attributes": 1, "name": 1 }}])))
     for cuisine, value in user_short_term_cuisine.items():
         if value >= 0:
@@ -185,7 +185,7 @@ def get_explorations(user_id):
     for cuisine in cuisine_explore:
             reco_explore.extend(list(recipe_collection.aggregate(
             [{"$match": {"attributes.cuisine": cuisine}},
-             {"$sample": {"size": 50}},
+             {"$sample": {"size": 48}},
              {"$project": {"_id": 1, "ingredientLines": 1, "images": 1, "attributes": 1, "name": 1}}])))
 
     res = []
@@ -243,7 +243,7 @@ def get_dashboard(userid):
         res["activity_data"] = user_activity
     res["favourites"] = model["favourite_cuisine"]
     res["short_term_favourites"] = model["shortterm_favourite_cuisine"]
-
+    # print(res)
     # return json.dumps(res)
     return res
 
