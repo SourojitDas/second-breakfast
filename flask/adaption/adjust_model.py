@@ -17,11 +17,13 @@ def get_new_value_for_attribute (action, currentAttributeValue, offset):
   reward = 0
   penalty = 0
   if (action == Actions.LIKE.value):
-    if (currentAttributeValue == BLOCKAGE_PENALTY):
+    if (currentAttributeValue < MIN_SCORE):
       return MIN_SCORE
     reward = +offset
     penalty = 0
   elif (action == Actions.DISLIKE.value):
+    if (currentAttributeValue == MIN_SCORE):
+      return MIN_SCORE
     reward = 0
     penalty = -offset
   elif (action == Actions.NOT_INTERESTED.value):
