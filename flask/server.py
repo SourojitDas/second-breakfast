@@ -44,7 +44,7 @@ def test():
         mimetype='application/json'
     )
 
-@app.route("/second-breakfast/statsitics/<uid01>")
+@app.route("/second-breakfast/statistics/<uid01>")
 def statsitics(uid01):
     # req_data = request.get_json()
     # print(req_data)
