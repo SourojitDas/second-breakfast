@@ -6,7 +6,7 @@ from adaption import adjust_model
 import math
 import time
 from random import shuffle
-
+from pymongo import ReturnDocument
 import os
 from config_loader import config
 
@@ -158,7 +158,6 @@ def get_recommendation(user_id):
 
     return recommendations
 
-
 def get_explorations(user_id):
     user_model = get_user_model(user_id)
     # print(user_model)
@@ -203,7 +202,6 @@ def get_explorations(user_id):
 
     return recommendations
 
-
 def track_activity(req_data):
     activity_data = req_data
     ts = time.time()
@@ -242,6 +240,16 @@ def track_activity(req_data):
     update_user_model(user_id, fav_cuisine, short_term_fav_cuisine)
     return "ok"
 
+def modify_long_term_model(user_id, long_model):
+    long_model_modified = {}
+    for i in long_model:
+        if long_model[i] > 0:
+            long_model_modified[i] =  long_model[i]
+    new_user_model = user_models_collection.find_one_and_update({"user_id": user_id},
+                                               {"$set": {"favourite_cuisine": dict(long_model_modified)}},
+                                               return_document=ReturnDocument.AFTER)
+    del new_user_model['_id']
+    return new_user_model
 
 def get_dashboard(userid):
     user_activity = get_user_activity(userid)
