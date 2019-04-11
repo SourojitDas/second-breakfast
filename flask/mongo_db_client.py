@@ -133,7 +133,7 @@ def get_recommendation(user_id):
         temp["_id"] = str(elem["_id"])
         temp["img"] = elem["images"][0]["hostedLargeUrl"]
         temp["name"] = elem["name"]
-        temp["reasoning"] = "favourite"
+        temp["reasoning"] = "This item is shown to you based on your likes and dislikes"
         res.append(temp)
     recommendations = recommendations + res
     res = []
@@ -143,7 +143,7 @@ def get_recommendation(user_id):
         temp["_id"] = str(elem["_id"])
         temp["img"] = elem["images"][0]["hostedLargeUrl"]
         temp["name"] = elem["name"]
-        temp["reasoning"] = "short_favourite"
+        temp["reasoning"] = "This item is shown to you based on your current mood"
         res.append(temp)
     recommendations = recommendations + res
     res = []
@@ -153,7 +153,7 @@ def get_recommendation(user_id):
         temp["_id"] = str(elem["_id"])
         temp["img"] = elem["images"][0]["hostedLargeUrl"]
         temp["name"] = elem["name"]
-        temp["reasoning"] = "explore_favourite"
+        temp["reasoning"] = "This item is shown to you to help you explore"
         res.append(temp)
     recommendations = recommendations + res
     shuffle(recommendations)
