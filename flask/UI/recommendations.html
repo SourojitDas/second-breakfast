@@ -92,7 +92,7 @@
     <ul>
         <li><a class="active" href="">Recommendations</a></li>
         <li><a href="explore.html">Explore</a></li>
-        <li><a href="#contact">Dashboard</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
         <li><a href="preferences.html">Preferences</a></li>
     </ul>
     </div>
@@ -159,8 +159,8 @@
                 let finalContent = ""
                 for (let j = 0; j < rows; j++) {
                     console.log("in inner")
-                    d = data[(i * columns) + j]
-                    var sp = ("<image class=" + "img" + " src=" + d.img + " alt=\'"+ d.reasoning + "'\>"
+                    d = data[(i * rows) + j]
+                    var sp = ("<image class=" + "img" + " src=" + d.img + " alt=\'"+ d.cuisine+"-" + d.reasoning +"'\>"
                         + "<br>" 
                         + "<span> " + d.name + " </span>"
                         + "<br>" + "<br>"

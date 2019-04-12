@@ -109,24 +109,24 @@ def get_recommendation(user_id):
     reco_short = []
     reco_explore = []
     for cuisine, value in user_fav_cuisine.items():
-        if value >= 0:
+        if value > 0:
             reco_fav.extend(list(recipe_collection.aggregate([{"$match":{"attributes.cuisine":cuisine,"ingredientLines": { "$nin": regexes }}},
-                    {"$sample":{"size": ((int(value)/sumVal) * 30) - 2}},
+                    {"$sample":{"size": ((int(value)/sumVal) * 50)}},
                     { "$project" : { "_id" : 1 , "ingredientLines" : 1, "images":1, "attributes": 1, "name": 1 }}])))
     for cuisine, value in user_short_term_cuisine.items():
-        if value >= 0:
+        if value > 0:
             reco_short.extend(list(recipe_collection.aggregate(
             [{"$match": {"attributes.cuisine": cuisine, "ingredientLines": {"$nin": regexes}}},
-             {"$sample": {"size": (math.ceil(value) / sumValShort) * 15}},
+             {"$sample": {"size": (math.ceil(value) / sumValShort) * 20}},
              {"$project": {"_id": 1, "ingredientLines": 1, "images": 1, "attributes": 1, "name": 1}}])))
 
-    for cuisine in cuisine_explore:
-            reco_explore.extend(list(recipe_collection.aggregate(
-            [{"$match": {"attributes.cuisine": cuisine}},
-             {"$sample": {"size": 5}},
-             {"$project": {"_id": 1, "ingredientLines": 1, "images": 1, "attributes": 1, "name": 1}}])))
+    # for cuisine in cuisine_explore:
+    reco_explore.extend(list(recipe_collection.aggregate(
+        [{"$match": {"attributes.cuisine": {'$in': cuisine_explore}}},
+        {"$sample": {"size": 10}},
+        {"$project": {"_id": 1, "ingredientLines": 1, "images": 1, "attributes": 1, "name": 1}}])))
 
-    res = []
+    res = {}
     for elem in reco_fav:
         temp = {}
         temp["cuisine"] = elem["attributes"]["cuisine"][0]
@@ -134,9 +134,11 @@ def get_recommendation(user_id):
         temp["img"] = elem["images"][0]["hostedLargeUrl"]
         temp["name"] = elem["name"]
         temp["reasoning"] = "This item is shown to you based on your likes and dislikes"
-        res.append(temp)
-    recommendations = recommendations + res
-    res = []
+        res[elem["name"]] = temp
+        # res[str(elem["_id"])] = temp
+    
+    recommendations = recommendations + list(res.values())[0:28]
+    res = {}
     for elem in reco_short:
         temp = {}
         temp["cuisine"] = elem["attributes"]["cuisine"][0]
@@ -144,9 +146,11 @@ def get_recommendation(user_id):
         temp["img"] = elem["images"][0]["hostedLargeUrl"]
         temp["name"] = elem["name"]
         temp["reasoning"] = "This item is shown to you based on your current mood"
-        res.append(temp)
-    recommendations = recommendations + res
-    res = []
+        res[elem["name"]] = temp
+        # res[str(elem["_id"])] = temp
+
+    recommendations = recommendations + list(res.values())[0:23]
+    res = {}
     for elem in reco_explore:
         temp = {}
         temp["cuisine"] = elem["attributes"]["cuisine"][0]
@@ -154,12 +158,13 @@ def get_recommendation(user_id):
         temp["img"] = elem["images"][0]["hostedLargeUrl"]
         temp["name"] = elem["name"]
         temp["reasoning"] = "This item is shown to you to help you explore"
-        res.append(temp)
-    recommendations = recommendations + res
+        res[elem["name"]] = temp
+        # res[str(elem["_id"])] = temp
+    recommendations = recommendations + list(res.values())[0:5]
     shuffle(recommendations)
     # result =json.dumps(recommendations)
 
-    return recommendations
+    return recommendations[0:48]
 
 def get_explorations(user_id):
     user_model = get_user_model(user_id)
@@ -193,6 +198,7 @@ def get_explorations(user_id):
     res = []
     for elem in reco_explore:
         temp = {}
+
         temp["cuisine"] = elem["attributes"]["cuisine"][0]
         temp["_id"] = str(elem["_id"])
         temp["img"] = elem["images"][0]["hostedLargeUrl"]
