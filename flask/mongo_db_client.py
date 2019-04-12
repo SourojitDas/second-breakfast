@@ -103,33 +103,35 @@ def get_recommendation(user_id):
     regexes = []
     for item in allergens:
         regexes.append(re.compile(".*" + item + ".*", re.IGNORECASE))
-    sumVal = sum(user_fav_cuisine.values())
-    sumValShort = sum(user_short_term_cuisine.values())
+    sumVal = sum([x for x in user_fav_cuisine.values() if x > 0])
+    sumValShort = sum([x for x in user_short_term_cuisine.values() if x > 0])
     reco_fav = []
     reco_short = []
     reco_explore = []
     for cuisine, value in user_fav_cuisine.items():
         if value > 0:
             reco_fav.extend(list(recipe_collection.aggregate([{"$match":{"attributes.cuisine":cuisine,"ingredientLines": { "$nin": regexes }}},
-                    {"$sample":{"size": ((int(value)/sumVal) * 50)}},
+                    {"$sample":{"size": ((int(value)/sumVal) * 100)}},
                     { "$project" : { "_id" : 1 , "ingredientLines" : 1, "images":1, "attributes": 1, "name": 1 }}])))
     for cuisine, value in user_short_term_cuisine.items():
         if value > 0:
             reco_short.extend(list(recipe_collection.aggregate(
             [{"$match": {"attributes.cuisine": cuisine, "ingredientLines": {"$nin": regexes}}},
-             {"$sample": {"size": (math.ceil(value) / sumValShort) * 20}},
+             {"$sample": {"size": (math.ceil(value) / sumValShort) * 50}},
              {"$project": {"_id": 1, "ingredientLines": 1, "images": 1, "attributes": 1, "name": 1}}])))
 
     # for cuisine in cuisine_explore:
     reco_explore.extend(list(recipe_collection.aggregate(
         [{"$match": {"attributes.cuisine": {'$in': cuisine_explore}}},
-        {"$sample": {"size": 10}},
+        {"$sample": {"size": 20}},
         {"$project": {"_id": 1, "ingredientLines": 1, "images": 1, "attributes": 1, "name": 1}}])))
 
     res = {}
     for elem in reco_fav:
         temp = {}
-        temp["cuisine"] = elem["attributes"]["cuisine"][0]
+        temp["cuisine"] = list(set(user_fav_cuisine.keys()).intersection(
+            set(elem["attributes"]["cuisine"])))[0]
+        temp["cuisines"] = elem["attributes"]["cuisine"]
         temp["_id"] = str(elem["_id"])
         temp["img"] = elem["images"][0]["hostedLargeUrl"]
         temp["name"] = elem["name"]
@@ -141,7 +143,9 @@ def get_recommendation(user_id):
     res = {}
     for elem in reco_short:
         temp = {}
-        temp["cuisine"] = elem["attributes"]["cuisine"][0]
+        temp["cuisine"] = list(set(user_short_term_cuisine).intersection(
+            set(elem["attributes"]["cuisine"])))[0]
+        temp["cuisines"] = elem["attributes"]["cuisine"]
         temp["_id"] = str(elem["_id"])
         temp["img"] = elem["images"][0]["hostedLargeUrl"]
         temp["name"] = elem["name"]
@@ -153,7 +157,9 @@ def get_recommendation(user_id):
     res = {}
     for elem in reco_explore:
         temp = {}
-        temp["cuisine"] = elem["attributes"]["cuisine"][0]
+        temp["cuisine"] = list(set(cuisine_explore).intersection(
+            set(elem["attributes"]["cuisine"])))[0]
+        temp["cuisines"] =elem["attributes"]["cuisine"]
         temp["_id"] = str(elem["_id"])
         temp["img"] = elem["images"][0]["hostedLargeUrl"]
         temp["name"] = elem["name"]
@@ -203,7 +209,7 @@ def get_explorations(user_id):
         temp["_id"] = str(elem["_id"])
         temp["img"] = elem["images"][0]["hostedLargeUrl"]
         temp["name"] = elem["name"]
-        temp["reasoning"] = "explore_favourite"
+        temp["reasoning"] = "This item is shown to you to help you explore"
         res.append(temp)
     recommendations = recommendations + res
     shuffle(recommendations)
@@ -227,7 +233,7 @@ def track_activity(req_data):
     new_long_term_value = 0
 
     if action_cusine in fav_cuisine.keys():
-        new_short_term_value = adjust_model.get_new_value_for_short_term_attribute(action, fav_cuisine[action_cusine])
+        new_short_term_value = adjust_model.get_new_value_for_short_term_attribute(action, short_term_fav_cuisine[action_cusine])
         new_long_term_value = adjust_model.get_new_value_for_long_term_attribute(action, fav_cuisine[action_cusine])
         # short_term_fav_cuisine[action_cusine] = new_short_term_value
         # fav_cuisine[action_cusine] = new_long_term_value
@@ -258,7 +264,7 @@ def modify_long_term_model(user_id, long_model):
                                                {"$set": {"favourite_cuisine": dict(long_model_modified)}},
                                                return_document=ReturnDocument.AFTER)
     del new_user_model['_id']
-    print(new_user_model)
+    # print(new_user_model)
     return new_user_model
 
 def get_dashboard(userid):

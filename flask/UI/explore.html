@@ -70,7 +70,26 @@
         .alt-wrap:hover>p.alt {
             opacity: 1;
             transition-delay: 0s;
-        }
+        }    .loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
     </style>
 </head>
 
@@ -117,18 +136,23 @@
     </div>
 
 
-
+<div id="loading" style="margin: auto;" class="loader"></div>
     <script>
+        var uId = localStorage.getItem('username')
         var selectedMap = new Map()
         window.onload = function () {
             var data = ""
-            var uId = localStorage.getItem('username')
+            
             fetch('http://127.0.0.1:5000/second-breakfast/explore/' + uId)
                 .then(function (response) {
+                     document.getElementById("loading").style.display = 'none';
                     return response.json();
+                    
                 })
                 .then(function (myJson) {
+                    
                     data = myJson
+                     document.getElementById("loading").style.display = 'none';
                     //localStorage.setItem('reccomData', JSON.stringify(myJson));
 
                     //var data = jQuery.parseJSON(localStorage.getItem('reccomData'));
@@ -154,7 +178,7 @@
                         for (let j = 0; j < rows; j++) {
                             console.log("in inner")
                             d = data[(i * columns) + j]
-                            var sp = ("<image class=" + "img" + " src=" + d.img + " alt=" + d.reasoning + ">"
+                            var sp = ("<image class=" + "img" + " src=" + d.img + " alt=" + d.cuisine + ">"
                                 + "<br>" + "<br>"
                                 + "<span> " + d.name + " </span>"
                                 + "<br>" + "<br>"
@@ -204,7 +228,7 @@
             }
             var updateData = {
 
-                "user_id": "uid01",
+                "user_id": uId,
 
                 "timestamp": Date.now,
 
