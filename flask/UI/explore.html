@@ -75,8 +75,10 @@
 </head>
 
 <body>
+        <div class="header">
+
     <div class="box">
-        <h3 style="text-align: center; font-weight: bold; color:black;">Second Breakast</h3>
+        <p style="text-align: center; font-weight: bold; color:black;font-size: 28px">Second Breakast</p>
     </div>
     <div class="progress-container">
         <div class="progress-bar" id="myBar"></div>
@@ -87,9 +89,10 @@
         <li><a href="#contact">Dashboard</a></li>
         <li><a href="preferences.html">Preferences</a></li>
     </ul>
+    </div>
     <!--     <button class="button1" onclick="submit()">Submit</button>
  -->
-    <h1>Explore</h1>
+    <h1 style="padding-top: 125px">Explore</h1>
     <div class="row">
         <div class="column">
             <div class="img-wrap">
@@ -240,7 +243,14 @@
 
 
         }
+    window.onscroll = function () { myFunction() };
 
+    function myFunction() {
+        var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        var scrolled = (winScroll / height) * 100;
+        document.getElementById("myBar").style.width = scrolled + "%";
+    }
     </script>
 </body>
 
