@@ -213,22 +213,30 @@
             var color
             var value
             if (action == 1) {
-                value="like"
+                value = "like"
                 color = document.getElementById("like_" + id);
                 color.className = 'button1'
                 color = document.getElementById("dislike_" + id);
                 color.className = 'button2'
-            } else if(action==0){
+                color = document.getElementById("notInterested_" + id);
+                color.className = 'button4'
+            } else if (action == 0) {
                 value = "dislike"
                 color = document.getElementById("dislike_" + id);
                 color.className = 'button1'
                 color = document.getElementById("like_" + id);
                 color.className = 'button3'
+                color = document.getElementById("notInterested_" + id);
+                color.className = 'button4'
             }
             else if (action == 2) {
                 value = "not_interested"
                 color = document.getElementById("notInterested_" + id);
                 color.className = 'button5'
+                color = document.getElementById("like_" + id);
+                color.className = 'button3'
+                color = document.getElementById("dislike_" + id);
+                color.className = 'button2'
             }
             var updateData = {
 

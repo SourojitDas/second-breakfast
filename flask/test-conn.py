@@ -4,7 +4,7 @@ import pymongo
 import os
 username = "AA"
 password = "hayabusa"
-connection = pymongo.MongoClient("vm-18-202-35-71.rosettavm.com:27017",
+connection = pymongo.MongoClient("vm-34-245-150-129.rosettavm.com:27017",
                      username='AA',
                      password='hayabusa',
                      authSource='admin',
