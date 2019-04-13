@@ -177,7 +177,7 @@
                         let finalContent = ""
                         for (let j = 0; j < rows; j++) {
                             console.log("in inner")
-                            d = data[(i * columns) + j]
+                            d = data[(i * rows) + j]
                             var sp = ("<image class=" + "img" + " src=" + d.img + " alt=" + d.cuisine + ">"
                                 + "<br>" + "<br>"
                                 + "<span> " + d.name + " </span>"
@@ -214,17 +214,25 @@
                 color.className = 'button1'
                 color = document.getElementById("dislike_" + id);
                 color.className = 'button2'
+                color = document.getElementById("notInterested_" + id);
+                color.className = 'button4'
             } else if (action == 0) {
                 value = "dislike"
                 color = document.getElementById("dislike_" + id);
                 color.className = 'button1'
                 color = document.getElementById("like_" + id);
                 color.className = 'button3'
+                color = document.getElementById("notInterested_" + id);
+                color.className = 'button4'
             }
-            else if (action == 3) {
+            else if (action == 2) {
                 value = "not_interested"
                 color = document.getElementById("notInterested_" + id);
                 color.className = 'button5'
+                color = document.getElementById("like_" + id);
+                color.className = 'button3'
+                color = document.getElementById("dislike_" + id);
+                color.className = 'button2'
             }
             var updateData = {
 
