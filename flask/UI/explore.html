@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Roboto);
+
+        /* ----- Page Styling ----- */
+        /* -- Irrelevant to Pen. Scroll down. -- */
+
+        .img-wrap {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+
+        .img {
+            display: block;
+        }
+
+        h1 {
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: 400;
+            letter-spacing: 2px;
+            font-size: 24px;
+        }
+
+        /* ----- Style the elements ----- */
+
+        /* Wrap the image and alt text */
+        /* Will be added with js */
+        .alt-wrap {
+            display: block;
+            position: relative;
+            margin: 20px;
+            color: whitesmoke;
+            border: 1px solid mediumorchid;
+        }
+
+        /* The alt text itself */
+        /* Will be added with js */
+        .alt-wrap p.alt {
+            position: absolute;
+            opacity: 0;
+            /* hide initially */
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            padding: 15px;
+            font-size: 14px;
+            line-height: 22px;
+            background-color: rgba(0, 0, 0, 0.8);
+            transition: all 300ms ease;
+            transition-delay: 300ms;
+        }
+
+        /* Hovering over the wrapper shows its alt p*/
+        .alt-wrap:hover>p.alt {
+            opacity: 1;
+            transition-delay: 0s;
+        }    .loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+    </style>
+</head>
+
+<body>
+        <div class="header">
+
+    <div class="box">
+        <p style="text-align: center; font-weight: bold; color:black;font-size: 28px">Second Breakast</p>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar" id="myBar"></div>
+    </div>
+    <ul>
+        <li><a  href="recommendations.html">Recommendations</a></li>
+        <li><a class="active" href="">Explore</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="preferences.html">Preferences</a></li>
+    </ul>
+    </div>
+    <!--     <button class="button1" onclick="submit()">Submit</button>
+ -->
+    <h1 style="padding-top: 125px">Explore</h1>
+    <div class="row">
+        <div class="column">
+            <div class="img-wrap">
+                <div id="imge0"></div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="img-wrap">
+                <div id="imge1"></div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="img-wrap">
+                <div id="imge2"></div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="img-wrap">
+                <div id="imge3"></div>
+            </div>
+        </div>
+    </div>
+
+
+<div id="loading" style="margin: auto;" class="loader"></div>
+    <script>
+        var uId = localStorage.getItem('username')
+        var selectedMap = new Map()
+        window.onload = function () {
+            var data = ""
+            
+            fetch('http://127.0.0.1:5000/second-breakfast/explore/' + uId)
+                .then(function (response) {
+                     document.getElementById("loading").style.display = 'none';
+                    return response.json();
+                    
+                })
+                .then(function (myJson) {
+                    
+                    data = myJson
+                     document.getElementById("loading").style.display = 'none';
+                    //localStorage.setItem('reccomData', JSON.stringify(myJson));
+
+                    //var data = jQuery.parseJSON(localStorage.getItem('reccomData'));
+                    console.log("in html", data)
+                    const columns = 4
+                    const rows = Math.round(data.length / columns)
+                    console.log(rows, columns)
+                    var finalContent = "";
+
+                    /*  data.forEach(function (d) {
+                         var sp = ("<image class=" + "img" + " src=" + d.img + " alt=" + d.reasoning + ">"
+                             + "<br>" + "<br>"
+                             + "<span> " + d.name + " </span>"
+                             + "<br>" + "<br>"
+                             + "<button id=" + "like_" + d._id + "  class=" + "button3" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,1)\">Like</button>"
+                             + "<button id=" + "dislike_" + d._id + " class=" + "button2" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,0)\">Dislike</button>"
+                         );
+                         finalContent = finalContent + sp
+                     }) */
+                    for (let i = 0; i < columns; i++) {
+                        console.log("in outer")
+                        let finalContent = ""
+                        for (let j = 0; j < rows; j++) {
+                            console.log("in inner")
+                            d = data[(i * rows) + j]
+                            var sp = ("<image class=" + "img" + " src=" + d.img + " alt=" + d.cuisine + ">"
+                                + "<br>" + "<br>"
+                                + "<span> " + d.name + " </span>"
+                                + "<br>" + "<br>"
+                                + "<button id=" + "like_" + d._id + "  class=" + "button3" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,1)\">Like</button>"
+                                + "<button id=" + "dislike_" + d._id + " class=" + "button2" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,0)\">Dislike</button>"
+                                + "<button id=" + "notInterested_" + d._id + " class=" + "button4" + " onclick=\"addValue(\'" + d._id + "'\,\'" + d.cuisine + "'\,\'" + d.img + "'\,2)\">Not Interested</button>"
+                            );
+                            finalContent = finalContent + sp
+                        }
+                        document.getElementById("imge" + i).innerHTML = finalContent;
+                    }
+                    console.log("after")
+                    $(".img").wrap('<div class="alt-wrap"/>');
+
+                    // Add alt text after each .img
+                    // 1. For all items with class .img...
+                    // 2. Run a function for each of them...
+                    // 3. To add a p element after it
+                    // 5. Containing that element's alt text
+                    $(".img").each(function () {
+                        $(this).after('<p class="alt">' + $(this).attr('alt') + '</p>');
+                    })
+                    /* document.getElementById("imgGrid1").innerHTML = finalContent;
+                    document.getElementById("imgGrid2").innerHTML = finalContent; */
+                });
+        }
+        function addValue(id, cuisine, imgURL, action) {
+            var color
+            var value
+            if (action == 1) {
+                value = "like"
+                color = document.getElementById("like_" + id);
+                color.className = 'button1'
+                color = document.getElementById("dislike_" + id);
+                color.className = 'button2'
+                color = document.getElementById("notInterested_" + id);
+                color.className = 'button4'
+            } else if (action == 0) {
+                value = "dislike"
+                color = document.getElementById("dislike_" + id);
+                color.className = 'button1'
+                color = document.getElementById("like_" + id);
+                color.className = 'button3'
+                color = document.getElementById("notInterested_" + id);
+                color.className = 'button4'
+            }
+            else if (action == 2) {
+                value = "not_interested"
+                color = document.getElementById("notInterested_" + id);
+                color.className = 'button5'
+                color = document.getElementById("like_" + id);
+                color.className = 'button3'
+                color = document.getElementById("dislike_" + id);
+                color.className = 'button2'
+            }
+            var updateData = {
+
+                "user_id": uId,
+
+                "timestamp": Date.now,
+
+                "cuisine": cuisine,
+
+                "action": value,
+
+                "imgURL": imgURL
+
+            }
+            var url = 'http://127.0.0.1:5000/second-breakfast/activity/';
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(updateData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => res.json())
+                .then(response => console.log('Success:', JSON.stringify(response)))
+                .catch(error => console.error('Error:', error));
+
+            value = { "cuisine_id": id, "cuisine": cuisine, "action": action, "image_URL": imgURL }
+            var did = id + "_" + cuisine;
+            selectedMap.set(did, value)
+            console.log(selectedMap)
+        }
+        function submit() {
+            var filteredList = []
+            for (let [k, v] of selectedMap) {
+                if (v.action == 1) {
+                    filteredList.push(v)
+                }
+            }
+            console.log(filteredList)
+            var userName = localStorage.getItem('username')
+
+
+        }
+    window.onscroll = function () { myFunction() };
+
+    function myFunction() {
+        var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        var scrolled = (winScroll / height) * 100;
+        document.getElementById("myBar").style.width = scrolled + "%";
+    }
+    </script>
+</body>
+
+</html>

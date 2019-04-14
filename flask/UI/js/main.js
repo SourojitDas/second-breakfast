@@ -14,13 +14,13 @@ function handleSignupInput(e){
 
 function submitSignupData() {
     localStorage.setItem('username', signupData.name);
-    fetch('http://localhost:5000/second-breakfast/show-recipe/')
+    /* fetch('http://127.0.0.1:5000/second-breakfast/show-recipe/')
         .then(function (response) {
             return response.json();
         })
         .then(function (myJson) {
             localStorage.setItem('imageDataKey', JSON.stringify(myJson));
-        });
-
+        }); */
     window.location.href = "file:///C:/Raaz(D)/Trinity/AA/second-breakfast/flask/UI/preferences.html";
+
 }

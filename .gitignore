@@ -2,3 +2,5 @@ myLib
 .idea
 *.pyc
 .vscode
+config.json
+__pycache__
